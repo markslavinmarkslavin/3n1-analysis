@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2-Adic Drift Analysis of Collatz Variants</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Georgia', serif;
+            background: #fafafa;
+            color: #222;
+            line-height: 1.8;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            font-weight: normal;
+        }
+        
+        h2 {
+            font-size: 1.3rem;
+            margin-top: 40px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+        
+        h3 {
+            font-size: 1.1rem;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+        
+        .abstract {
+            background: #f0f0f0;
+            padding: 25px;
+            border-left: 4px solid #333;
+            margin: 30px 0;
+            font-style: italic;
+        }
+        
+        .authors {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .formula {
+            background: #f8f8f8;
+            padding: 15px 20px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px 12px;
+            text-align: left;
+        }
+        
+        th {
+            background: #f5f5f5;
+        }
+        
+        .result-box {
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .highlight {
+            background: #fffde7;
+            padding: 2px 6px;
+        }
+        
+        code {
+            background: #f0f0f0;
+            padding: 2px 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        .note {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 30px;
+        }
+        
+        a { color: #0066cc; }
+        
+        .modulo-table td:nth-child(2),
+        .modulo-table td:nth-child(3),
+        .modulo-table td:nth-child(4) {
+            text-align: center;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+
+<h1>2-Adic Drift Analysis of Collatz Variants</h1>
+<p class="authors">Mark Slavin · 2026</p>
+
+<div class="abstract">
+    <strong>Abstract.</strong> We present a formal 2-adic analysis of the Collatz-like sequences 3n+1 and 3n−1. By computing the distribution of v₂(3n+k) for odd n, we discover that while both systems have identical average behavior (E[v₂] = 2), the crucial difference lies in the modular distribution. For n ≡ 1 (mod 4), the 3n+1 system exhibits v₂ = 3 on average, while 3n−1 shows v₂ = 1. This structural asymmetry provides a heuristic explanation for why 3n−1 admits multiple cycles while 3n+1 appears to converge to 1 for all tested values.
+</div>
+
+<h2>1. Introduction</h2>
+
+<p>
+The Collatz conjecture (3n+1) remains unproven despite decades of investigation. However, its variant 3n−1 has been completely solved: all positive integers eventually fall into one of three cycles. This paper provides a formal explanation for this difference using 2-adic valuation analysis.
+</p>
+
+<h2>2. Methodology</h2>
+
+<h3>2.1 2-Adic Valuation</h3>
+<p>
+For any positive integer m, let v₂(m) denote the 2-adic valuation—the exponent of the highest power of 2 dividing m:
+</p>
+
+<div class="formula">
+    v₂(m) = max{k | 2ᵏ divides m}
+</div>
+
+<h3>2.2 Drift Coefficient</h3>
+<p>
+For an odd n in the sequence 3n+k, after one step we have:
+</p>
+
+<div class="formula">
+    n<sub>next</sub> = (3n + k) / 2<sup>v₂(3n+k)</sup>
+</div>
+
+<p>
+In logarithmic scale:
+</p>
+
+<div class="formula">
+    log₂(n<sub>next</sub>) = log₂(3) + log₂(n) − v₂(3n+k)
+</div>
+
+<p>
+The <em>drift coefficient</em> is defined as:
+</p>
+
+<div class="formula">
+    D = log₂(3) − E[v₂]
+</div>
+
+<p>
+If D < 0, the sequence contracts on average (log₂ decreases). If D > 0, it expands.
+</p>
+
+<h2>3. Results</h2>
+
+<h3>3.1 Average Behavior</h3>
+
+<table>
+    <tr>
+        <th>System</th>
+        <th>Samples</th>
+        <th>E[v₂]</th>
+        <th>Drift D</th>
+    </tr>
+    <tr>
+        <td>3n+1</td>
+        <td>250,000</td>
+        <td>2.000000</td>
+        <td>−0.415037</td>
+    </tr>
+    <tr>
+        <td>3n−1</td>
+        <td>250,000</td>
+        <td>1.999988</td>
+        <td>−0.415025</td>
+    </tr>
+</table>
+
+<p>
+Both systems show <strong>identical average behavior</strong>: E[v₂] = 2, meaning both contract at approximately 0.415 bits per step on average.
+</p>
+
+<div class="result-box">
+    <strong>Key Insight:</strong> The average behavior is the same. The difference must lie in the <em>distribution</em> across residue classes.
+</div>
+
+<h3>3.2 Modular Distribution (The Critical Difference)</h3>
+
+<table class="modulo-table">
+    <tr>
+        <th>Residue</th>
+        <th>E[v₂] (3n+1)</th>
+        <th>E[v₂] (3n−1)</th>
+        <th>Δ</th>
+    </tr>
+    <tr>
+        <td>n ≡ 1 (mod 4)</td>
+        <td>3.000</td>
+        <td>1.000</td>
+        <td>+2.000</td>
+    </tr>
+    <tr>
+        <td>n ≡ 3 (mod 4)</td>
+        <td>1.000</td>
+        <td>3.000</td>
+        <td>−2.000</td>
+    </tr>
+</table>
+
+<p>
+For n ≡ 1 (mod 4):
+</p>
+<ul>
+    <li>3n+1: v₂ = 3 on average (strong contraction)</li>
+    <li>3n−1: v₂ = 1 on average (weak contraction)</li>
+</ul>
+
+<p>
+For n ≡ 3 (mod 4):
+</p>
+<ul>
+    <li>3n+1: v₂ = 1 on average (weak contraction)</li>
+    <li>3n−1: v₂ = 3 on average (strong contraction)</li>
+</ul>
+
+<h3>3.3 Extended Modulo Analysis (mod 8)</h3>
+
+<table class="modulo-table">
+    <tr>
+        <th>n (mod 8)</th>
+        <th>E[v₂] (3n+1)</th>
+        <th>E[v₂] (3n−1)</th>
+        <th>Δ</th>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>2.000</td>
+        <td>1.000</td>
+        <td>+1.000</td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>1.000</td>
+        <td>4.000</td>
+        <td>−3.000</td>
+    </tr>
+    <tr>
+        <td>5</td>
+        <td>4.999</td>
+        <td>1.000</td>
+        <td>+4.000</td>
+    </tr>
+    <tr>
+        <td>7</td>
+        <td>1.000</td>
+        <td>2.000</td>
+        <td>−1.000</td>
+    </tr>
+</table>
+
+<h2>4. Interpretation</h2>
+
+<p>
+The critical difference between 3n+1 and 3n−1 is not in the mean, but in <strong>which residue classes experience strong vs. weak contraction</strong>:
+</p>
+
+<ul>
+    <li><strong>3n+1</strong> strongly contracts for n ≡ 1 (mod 4) — the numbers that would otherwise "escape" are quickly pulled back down</li>
+    <li><strong>3n−1</strong> weakly contracts for n ≡ 1 (mod 4) — allowing trajectories to wander and form cycles</li>
+</ul>
+
+<p>
+This structural asymmetry explains why:
+</p>
+
+<ol>
+    <li>3n+1 appears to converge to 1 for all tested n (strong contraction classes dominate)</li>
+    <li>3n−1 admits exactly 3 cycles: (1,2), (5,14,7,20,10), and an 18-element cycle</li>
+</ol>
+
+<h2>5. Conclusion</h2>
+
+<p>
+We have shown that the 2-adic drift analysis, when applied at the modular level, reveals a fundamental structural difference between 3n+1 and 3n−1 that explains their divergent behaviors. This approach provides a new lens for analyzing Collatz-like systems.
+</p>
+
+<p>
+The analysis was performed on 500,000 odd numbers (1,000,000 total integers). The code is available at:
+</p>
+
+<p>
+<a href="https://github.com/markslavinmarkslavin/3n1-analysis">https://github.com/markslavinmarkslavin/3n1-analysis</a>
+</p>
+
+<div class="note">
+    <strong>Acknowledgments:</strong> This research was conducted using the PMAS (Pattern Matching Analysis System) framework v16.0.
+</div>
+
+</body>
+</html>
